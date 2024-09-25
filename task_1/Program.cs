@@ -3,13 +3,13 @@ class Program
 {
     static void Main(string[] args)
     {
-        int N = 13, K = 15, M = 6;
+        int N = 8, K = 3, M = 6;
 
         Tournament manager = new Tournament(N, K, M);
         int[,] matrix = manager.Generate_choise();
-        //int[,] matrix = manager.GenerateSchedule();
 
         Console.WriteLine("---------Итоговое расписание:-------------");
+        Console.Write($"Score: {manager.Calculate_score(matrix)}\n");
         for (int i = 0; i < N; i++){
             Console.Write($"\t{i + 1}");
         }

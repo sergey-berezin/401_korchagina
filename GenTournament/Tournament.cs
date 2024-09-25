@@ -29,16 +29,17 @@ namespace GenTournament
             for (int generation = 0; generation < 1000; generation++)
             {
                 // наилучший результат
-                var scores = population.Select(val => calculate_score(val)).ToArray();
+                var scores = population.Select(val => Calculate_score(val)).ToArray();
                 var id_best_population = scores.Select((score, index) => new { score, index })
                                        .OrderByDescending(x => x.score)
                                        .Take(20)
                                        .Select(x => x.index)
                                        .ToList();
                 var top_population = id_best_population.Select(index => population[index]).ToList();
-                var best_population = top_population.OrderByDescending(calculate_score).First();
+                var best_population = top_population.OrderByDescending(Calculate_score).First();
 
                 Console.Write($"Поколение №{generation + 1}\n");
+                Console.Write($"Score: {Calculate_score(best_population)}\n");
                 for (int i = 0; i < N; i++)
                 {
                     Console.Write($"\t{i + 1}");
@@ -63,7 +64,7 @@ namespace GenTournament
                     return best_population;
                 }
             }
-            return population.OrderByDescending(calculate_score).First();
+            return population.OrderByDescending(Calculate_score).First();
         }
 
         private int[,] create_population()
@@ -100,7 +101,7 @@ namespace GenTournament
             return matrix;
         }
 
-        private int calculate_score(int[,] matrix)
+        public int Calculate_score(int[,] matrix)
         {
             var opponents = new Dictionary<int, HashSet<int>>();
             var areas = new Dictionary<int, HashSet<int>>();
