@@ -3,7 +3,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        int N = 8, K = 3, M = 6;
+        int N = 10, K = 5, M = 6;
 
         Tournament manager = new Tournament(N, K, M);
         int[,] matrix = manager.Generate_choise();

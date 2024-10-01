@@ -38,33 +38,42 @@ namespace GenTournament
                 var top_population = id_best_population.Select(index => population[index]).ToList();
                 var best_population = top_population.OrderByDescending(Calculate_score).First();
 
-                Console.Write($"Поколение №{generation + 1}\n");
-                Console.Write($"Score: {Calculate_score(best_population)}\n");
-                for (int i = 0; i < N; i++)
-                {
-                    Console.Write($"\t{i + 1}");
-                }
-                Console.WriteLine();
-                for (int i = 0; i < K; i++) //туры
-                {
-                    Console.Write(i + 1);
-                    for (int j = 0; j < N; j++) //участники
-                    {
-                        Console.Write($"\t{best_population[i, j]}"); //площадка
-                    }
-                    Console.WriteLine();
-                }
                 // Обновление популяции
+                var result = press_and_write(generation, best_population);
+                if(result != null){
+                    best_population = result;
+                    return best_population;
+                }
                 var newPopulation = create_new_population(top_population);
                 population = newPopulation;
+            }
+            return population.OrderByDescending(Calculate_score).First();
+        }
 
-                if (Console.KeyAvailable)
+        private int[,]? press_and_write(int generation, int[,] best_population)
+        {
+            Console.Write($"Поколение №{generation + 1}\n");
+            Console.Write($"Score: {Calculate_score(best_population)}\n");
+            for (int i = 0; i < N; i++)
+            {
+                Console.Write($"\t{i + 1}");
+            }
+            Console.WriteLine();
+            for (int i = 0; i < K; i++) //туры
+            {
+                Console.Write(i + 1);
+                for (int j = 0; j < N; j++) //участники
+                {
+                    Console.Write($"\t{best_population[i, j]}"); //площадка
+                }
+                Console.WriteLine();
+            }
+            if (Console.KeyAvailable)
                 {
                     Console.ReadKey();
                     return best_population;
                 }
-            }
-            return population.OrderByDescending(Calculate_score).First();
+            return null;
         }
 
         private int[,] create_population()
