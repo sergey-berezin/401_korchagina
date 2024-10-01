@@ -17,14 +17,19 @@ namespace GenTournament
             random = new Random();
         }
 
-        public int[,] Generate_choise()
-        {
+        private List<int[,]> create_first_population(){
             // Создание начальной популяции
             var population = new List<int[,]>();
             for (int i = 0; i < 10; i++)
             {
                 population.Add(create_population());
             }
+            return population;
+        }
+
+        public int[,] Generate_choise()
+        {
+            var population = create_first_population();
 
             for (int generation = 0; generation < 1000; generation++)
             {
@@ -38,13 +43,13 @@ namespace GenTournament
                 var top_population = id_best_population.Select(index => population[index]).ToList();
                 var best_population = top_population.OrderByDescending(Calculate_score).First();
 
-                // Обновление популяции
                 var result = press_and_write(generation, best_population);
                 if(result != null){
                     best_population = result;
                     return best_population;
                 }
-                var newPopulation = create_new_population(top_population);
+                // Обновление популяции
+                var newPopulation = generate_module(top_population);
                 population = newPopulation;
             }
             return population.OrderByDescending(Calculate_score).First();
@@ -164,7 +169,7 @@ namespace GenTournament
             return minOpponents * 1000 + minVenues;
         }
 
-        private List<int[,]> create_new_population(List<int[,]> selected)
+        private List<int[,]> generate_module(List<int[,]> selected)
         {
             var new_population = new List<int[,]>(selected);
 
