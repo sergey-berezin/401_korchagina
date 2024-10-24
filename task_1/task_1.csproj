@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GenTournament" Version="1.2.16" />
+    <PackageReference Include="GenTournament" Version="2.0.1" />
   </ItemGroup>
 
 </Project>

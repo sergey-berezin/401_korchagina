@@ -3,25 +3,29 @@ class Program
 {
     static void Main(string[] args)
     {
-        int N = 10, K = 5, M = 6;
+        int N = 10, K = 9, M = 6;
 
-        Tournament manager = new Tournament(N, K, M);
-        int[,] matrix = manager.Generate_choise();
+        int population_size = 10;
+        int num_of_crossovers_and_mutated = 10;
+        int steps_of_algorithm = 80;
+        bool CTRL_C_NOT_PRESSED = true;
 
-        Console.WriteLine("---------Итоговое расписание:-------------");
-        Console.Write($"Score: {manager.Calculate_score(matrix)}\n");
-        for (int i = 0; i < N; i++){
-            Console.Write($"\t{i + 1}");
-        }
-        Console.WriteLine();
-        for (int i = 0; i < K; i++) //туры
+        Tournament manager = new Tournament(N, K, M, population_size, num_of_crossovers_and_mutated);
+
+        Console.CancelKeyPress += new ConsoleCancelEventHandler(myHandler);
+        void myHandler(object sender, ConsoleCancelEventArgs args)
         {
-            Console.Write(i + 1);
-            for (int j = 0; j < N; j++) //участники
-            {
-                Console.Write($"\t{matrix[i, j]}"); //площадка
-            }
-            Console.WriteLine();
+            args.Cancel = true;
+            CTRL_C_NOT_PRESSED = false;
+        }
+
+        for (int i = 0; i < steps_of_algorithm; i++)
+        {
+            if (!CTRL_C_NOT_PRESSED)
+                break;
+            int[,] result = manager.Generate_best_schedule();
+            manager.write(i, result);
+
         }
     }
 }

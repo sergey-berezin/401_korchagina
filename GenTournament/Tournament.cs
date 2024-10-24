@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 namespace GenTournament
@@ -8,54 +9,106 @@ namespace GenTournament
     {
         private readonly int N, K, M;
         private readonly Random random;
+        private readonly int Population_size, Num_of_crossovers_and_mutated;
+        private List<int[,]> population;
+        List<int> scores;
+        public int[,] best_result;
+        public int best_score;
 
-        public Tournament(int n, int k, int m)
+        public Tournament(int n, int k, int m, int population_size, int num_of_crossovers_and_mutated)
         {
             N = n;
             K = k;
             M = m;
+            Population_size = population_size;
+            Num_of_crossovers_and_mutated = num_of_crossovers_and_mutated;
+            scores = (new int[Population_size + Num_of_crossovers_and_mutated]).ToList();
             random = new Random();
+            population = create_first_population(); 
         }
 
         private List<int[,]> create_first_population(){
             // Создание начальной популяции
             var population = new List<int[,]>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < Population_size; i++)
             {
                 population.Add(create_population());
             }
             return population;
         }
-
-        public int[,] Generate_choise()
+        public List<int[,]> TournamentSelectionWithRanking()
         {
-            var population = create_first_population();
+            var combinedData = population.Select((table, index) => new { Table = table, Score = scores[index] });
+            var rankedPopulation = combinedData.OrderByDescending(item => item.Score).Select(item => item.Table).ToList();
+            best_result = rankedPopulation.First();
+            best_score = Calculate_score(best_result);
 
-            for (int generation = 0; generation < 1000; generation++)
+            ConcurrentBag<int[,]> selectedPopulation = new ConcurrentBag<int[,]>();
+            Parallel.For(0, Population_size, i =>
             {
-                // наилучший результат
-                var scores = population.Select(val => Calculate_score(val)).ToArray();
-                var id_best_population = scores.Select((score, index) => new { score, index })
-                                       .OrderByDescending(x => x.score)
-                                       .Take(20)
-                                       .Select(x => x.index)
-                                       .ToList();
-                var top_population = id_best_population.Select(index => population[index]).ToList();
-                var best_population = top_population.OrderByDescending(Calculate_score).First();
-
-                var result = press_and_write(generation, best_population);
-                if(result != null){
-                    best_population = result;
-                    return best_population;
-                }
-                // Обновление популяции
-                var newPopulation = generate_module(top_population);
-                population = newPopulation;
-            }
-            return population.OrderByDescending(Calculate_score).First();
+                // Выбираем случайный индекс в пределах турнирного размера
+                int tournamentIndex = Random.Shared.Next(Population_size);
+                // Добавляем особь с этим индексом из ранжированной популяции
+                selectedPopulation.Add(rankedPopulation[tournamentIndex]);
+            });
+            return selectedPopulation.ToList();
         }
-
-        private int[,]? press_and_write(int generation, int[,] best_population)
+        public void Calculate_scores_general()
+        {
+            ConcurrentBag<int> paral_scores = new ConcurrentBag<int>();
+            Parallel.For(0, population.Count, i =>
+            {
+                int score = Calculate_score(population[i]);
+                scores[i] = score;
+            });
+        }
+        public string[,] Show(int[,] shedule)
+        {
+            var view = new string[K, M];
+            for (int i = 0; i < K; i++) {
+                for (int j = 0; j < M; j++)
+                {
+                    int first = 0;
+                    int second = 0;
+                    int count = 0;
+                    //int k = 0;
+                    for (int k = 0; k < N; ++k)
+                    {
+                        if (shedule[i, k] == j + 1)
+                        {
+                            if (count == 0)
+                            {
+                                first = k;
+                                count = 1;
+                            }
+                            else
+                            {
+                                second = k;
+                                count = 2;
+                                break;
+                            }
+                        }
+                    }
+                    if (count == 0)
+                        view[i, j] = "X";
+                    else
+                    {
+                        first++;
+                        second++;
+                        view[i, j] = "(" + first.ToString() + ", " + second.ToString() + ")";
+                    }
+                }
+            }
+            return view;
+        }
+        public void Generate_best_schedule()
+        {
+            population = generate_module(population);
+            Calculate_scores_general();
+            population = TournamentSelectionWithRanking();
+            //return population.OrderByDescending(Calculate_score).First();
+        }
+        public void write(int generation, int[,] best_population)
         {
             Console.Write($"Поколение №{generation + 1}\n");
             Console.Write($"Score: {Calculate_score(best_population)}\n");
@@ -73,12 +126,6 @@ namespace GenTournament
                 }
                 Console.WriteLine();
             }
-            if (Console.KeyAvailable)
-                {
-                    Console.ReadKey();
-                    return best_population;
-                }
-            return null;
         }
 
         private int[,] create_population()
@@ -171,9 +218,9 @@ namespace GenTournament
 
         private List<int[,]> generate_module(List<int[,]> selected)
         {
+            ConcurrentBag<int[,]> paral_list = new ConcurrentBag<int[,]>();
             var new_population = new List<int[,]>(selected);
-
-            for (int i = 0; i < 20; i++)
+            Parallel.For(0, Num_of_crossovers_and_mutated, _ =>
             {
                 int parent1_index = random.Next(selected.Count);
                 int parent2_index = random.Next(selected.Count);
@@ -185,8 +232,9 @@ namespace GenTournament
                 mutate(child);
 
                 // Добавляем ребенка в новую популяцию
-                new_population.Add(child);
-            }
+                paral_list.Add(child);
+            });
+            new_population.AddRange(paral_list);
 
             return new_population;
         }
