@@ -45,7 +45,7 @@ namespace Task_2
             RunButton.IsEnabled = false;
             int population_size = 1000;
             int num_of_crossovers_and_mutated = 1000;
-            int steps_of_algorithm = 60;
+            int steps_of_algorithm = 1000;
 
             BindingExpression be1 = BindingOperations.GetBindingExpression(TextBox1, TextBox.TextProperty);
             be1.UpdateSource();
@@ -82,7 +82,8 @@ namespace Task_2
                     
                     dt.Rows.Add(dr);
                 }
-                await Task.Delay(100).ContinueWith(_ =>
+                k++;
+                if (k % 10 == 0)
                 {
                     App.Current.Dispatcher.Invoke(() =>
                     {
@@ -90,8 +91,7 @@ namespace Task_2
                         TextBlock1.Text = manager.best_score.ToString();
                         TextBlock2.Text = k.ToString();
                     });
-                });
-                k++;
+                }
             }
             RunButton.IsEnabled = true;
         }
