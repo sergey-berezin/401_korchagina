@@ -7,15 +7,18 @@ namespace GenTournament
 
     public class Tournament
     {
-        private readonly int N, K, M;
+        public int N { get; set; }
+        public int K { get; set; }
+        public int M { get; set; }
         private readonly Random random;
-        private readonly int Population_size, Num_of_crossovers_and_mutated;
-        private List<int[,]> population;
+        public int Population_size { get; set; }
+        public int Num_of_crossovers_and_mutated { get; set; }
+        public List<int[,]> population { get; set; }
         List<int> scores;
         public int[,] best_result;
         public int best_score;
 
-        public Tournament(int n, int k, int m, int population_size, int num_of_crossovers_and_mutated)
+        public Tournament(int n, int k, int m, int population_size, int num_of_crossovers_and_mutated, List<int[,]> loadPopulation = null)
         {
             N = n;
             K = k;
@@ -24,7 +27,14 @@ namespace GenTournament
             Num_of_crossovers_and_mutated = num_of_crossovers_and_mutated;
             scores = (new int[Population_size + Num_of_crossovers_and_mutated]).ToList();
             random = new Random();
-            population = create_first_population(); 
+            if (loadPopulation != null)
+            {
+                population = loadPopulation;
+            }
+            else
+            {
+                population = create_first_population();
+            }
         }
 
         private List<int[,]> create_first_population(){
