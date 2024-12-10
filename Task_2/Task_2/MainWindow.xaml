@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task_2"
         mc:Ignorable="d"
-        Title="Расписание турниров" Height="462" Width="800">
-    <Grid Height="429" VerticalAlignment="Top">
+        Title="Расписание турниров" Height="539" Width="800">
+    <Grid Height="515" VerticalAlignment="Top">
         <TextBlock HorizontalAlignment="Left" Margin="21,24,0,0" TextWrapping="Wrap" Text="Число участников N (N &gt;= K)" VerticalAlignment="Top" Width="169" Height="25" FontSize="12"/>
-        <TextBox Name="TextBox1" Text="{Binding Path=N, Mode=OneWayToSource, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Left" Margin="21,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="169" Height="34" FontSize="14"/>
+        <TextBox Name="TextBox1" Text="{Binding Path=N, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="21,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="169" Height="34" FontSize="14"/>
         <TextBlock HorizontalAlignment="Left" Margin="312,24,0,0" TextWrapping="Wrap" Text="Число туров K (K &gt; 1)" VerticalAlignment="Top" Width="125" Height="21" FontSize="12"/>
-        <TextBox Name="TextBox2" Text="{Binding Path=K, Mode=OneWayToSource, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Left" Margin="312,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="125" Height="34" FontSize="14"/>
+        <TextBox Name="TextBox2" Text="{Binding Path=K, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="312,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="125" Height="34" FontSize="14"/>
         <TextBlock HorizontalAlignment="Left" Margin="543,22,0,0" TextWrapping="Wrap" Text="Число площадок M   (M &gt;= N / 2)" VerticalAlignment="Top" Width="192" Height="19" FontSize="12"/>
-        <TextBox Name="TextBox3" Text="{Binding Path=M, Mode=OneWayToSource, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Left" Margin="545,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="192" Height="34" FontSize="14"/>
+        <TextBox Name="TextBox3" Text="{Binding Path=M, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="545,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="192" Height="34" FontSize="14"/>
         <Button Name="RunButton" Content="Пуск" Click="Run_button_click" HorizontalAlignment="Left" Margin="56,380,0,0" VerticalAlignment="Top" Width="87" Height="39" FontFamily="Cascadia Mono" FontSize="14"/>
         <Button Name="StopButton" Content="Пауза" Click="Stop_button_click" HorizontalAlignment="Left" Margin="168,380,0,0" VerticalAlignment="Top" Height="39" Width="93" FontSize="14" FontFamily="Cascadia Mono"/>
         <TextBlock HorizontalAlignment="Left" Margin="303,357,0,0" TextWrapping="Wrap" Text="Значение метрики:" VerticalAlignment="Top" Width="130" Height="40" FontSize="14"/>
@@ -20,6 +20,9 @@
         <TextBlock Name="TextBlock1" HorizontalAlignment="Left" Margin="303,380,0,0" TextWrapping="Wrap" Text=" " VerticalAlignment="Top" Width="120" Height="37" FontSize="24"/>
         <TextBlock HorizontalAlignment="Left" Margin="479,357,0,0" TextWrapping="Wrap" Text="Номер итерации алгоритма:" VerticalAlignment="Top" Width="192" Height="40" FontSize="14"/>
         <TextBlock Name="TextBlock2" HorizontalAlignment="Left" Margin="479,380,0,0" TextWrapping="Wrap" Text=" " VerticalAlignment="Top" Width="180" Height="37" FontSize="24"/>
-
+        <Button x:Name="SaveButton" Content="Сохранить" Click="Save_button_click" HorizontalAlignment="Left" Margin="56,447,0,0" VerticalAlignment="Top" Width="87" Height="39" FontFamily="Cascadia Mono" FontSize="14"/>
+        <Button x:Name="LoadButton" Content="Загрузить" Click="Load_button_click" HorizontalAlignment="Left" Margin="168,447,0,0" VerticalAlignment="Top" Width="93" Height="39" FontFamily="Cascadia Mono" FontSize="14"/>
+        <TextBlock Name="TextBlock3" HorizontalAlignment="Left" Margin="303,456,0,0" TextWrapping="Wrap" Text="Название эксперимента" VerticalAlignment="Top" Width="189" Height="26" FontSize="14"/>
+        <TextBox x:Name="ExperimentName" HorizontalAlignment="Left" Height="22" Margin="497,456,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="174"/>
     </Grid>
 </Window>
